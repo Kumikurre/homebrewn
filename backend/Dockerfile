@@ -2,11 +2,12 @@
 # Dcokerfile for go-gin-wrapper
 FROM golang:1.15.4
 
-WORKDIR /homebrewn
-COPY . .
+RUN mkdir /backend
+COPY . ./backend
 
-RUN go get -d -v ./...
-RUN go install -v ./...
+RUN go get -u github.com/gin-gonic/gin
+
+RUN go build -o main ./backend/
 
 EXPOSE 8080
-CMD ["go" , "run", "main.go"]
+CMD ["main"]

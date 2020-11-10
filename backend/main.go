@@ -6,7 +6,8 @@ import "net/http"
 func main() {
 	router := gin.Default()
 
-	router.Static("/assets", "./assets")
+	// Gin should probably not route any static content, but a web server should do it instead...
+	router.Static("/assets/", "../frontend/")
 
 	// List all devices
 	router.GET("/devices", func(c *gin.Context) {

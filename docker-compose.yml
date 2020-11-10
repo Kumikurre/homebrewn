@@ -4,16 +4,3 @@ services:
     build: ./backend
     ports:
       - "8080:8080"
-    networks:
-      - internal
-
-  front:
-    build:
-      context: frontend
-      dockerfile: Dockerfile
-    volumes:
-      - './frontend/deploy:/tmp/deploy'
-    links:
-      - core
-    networks:
-      - internal

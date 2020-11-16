@@ -11,7 +11,7 @@ m.render(root, [
 var get_devices = function() {
     m.request({
         method: "GET",
-        url: "/devices"
+        url: "/api/devices"
     })
     .then(function(data) {
         m.render(root.output, [

@@ -1,0 +1,14 @@
+[
+    {
+        "name": "test_name",
+        "device_id": "123abc"
+    },
+    {
+        "name": "test_name2",
+        "device_id": "123abd"
+    },
+    {
+        "name": "test_name4",
+        "device_id": "123abe"
+    }
+]

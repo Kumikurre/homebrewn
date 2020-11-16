@@ -1,13 +1,21 @@
+FROM golang:latest AS builder
 
-# Dcokerfile for go-gin-wrapper
-FROM golang:1.15.4
+RUN mkdir -p /go/src/builder/back
 
-RUN mkdir /backend
-COPY . ./backend
+ADD ./main.go /go/src/builder/back
+ADD ./go.mod /go/src/builder/back
+ADD ./go.sum /go/src/builder/back
 
-RUN go get -u github.com/gin-gonic/gin
+WORKDIR /go/src/builder/back
 
-RUN go build -o main ./backend/
+RUN GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /go/bin/main
+
+FROM alpine:3.11.2
+
+RUN apk add --no-cache ca-certificates openssl
+
+COPY --from=builder /go/bin/main /go/bin/main
 
 EXPOSE 8080
-CMD ["main"]
+
+ENTRYPOINT [ "/go/bin/main" ]

@@ -1,6 +1,36 @@
-version: '3'
+version: "3.3"
 services:
   back:
-    build: ./backend
+    # image: golang:latest
+    # volumes:
+    #   - ./backend:/go/src/go-with-compose
+    # working_dir: /go/src/go-with-compose
+    # ports:
+    #   - "8080:8080"
+    # command: go run main.go
+    build:
+      context: backend
+      dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - 8080:8080
+    networks:
+      - internal
+
+  nginx:
+    image: nginx:1.17.6
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./config/default.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/:/frontend
+    ports:
+      - "80:80"
+    links:
+      - back
+    networks:
+      - internal
+
+networks:
+  internal:
+    driver: bridge
+
+

@@ -14,7 +14,7 @@ var get_devices = function() {
         url: "/api/devices"
     })
     .then(function(data) {
-        m.render(root.output, [
+        m.render(root.devices, [
             m("output", [
                 m("h2", {class: "title"}, data)
             ])

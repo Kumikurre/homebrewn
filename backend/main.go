@@ -1,58 +1,21 @@
 package main
 
 import (
-	"context"
-	"log"
 	"net/http"
-	"time"
 
 	gin "github.com/gin-gonic/gin"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"github.com/Kumikurre/homebrewn/backend/database"
 )
 
-// Device information
-type Device struct {
-	Name     string `json:"name" bson:"name"`
-	DeviceID string `json:"device_id" bson:"device_id"`
-}
-
 func main() {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://mongo:27017"))
-
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		panic(err)
-	}
-
-	collection := client.Database("iot").Collection("devices")
+	database.Init("mongodb://mongo:27017")
 
 	router := gin.Default()
 
 	// List all devices
 	router.GET("/devices", func(c *gin.Context) {
-		var devices []Device
-		cur, err := collection.Find(c, bson.D{})
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer cur.Close(c)
-		for cur.Next(c) {
-			var device Device
-			err := cur.Decode(&device)
-			if err != nil {
-				log.Fatal(err)
-			}
-			devices = append(devices, device)
-		}
-		if err := cur.Err(); err != nil {
-			log.Fatal(err)
-		}
+		devices := database.GetAllDevices(c)
 		c.JSON(http.StatusOK, devices)
 	})
 
@@ -62,13 +25,10 @@ func main() {
 	})
 
 	router.POST("/device", func(c *gin.Context) {
-		var device Device
+		var device database.Device
 		c.BindJSON(&device)
+		res := database.InsertDevice(c, device)
 
-		res, err := collection.InsertOne(c, device)
-		if err != nil {
-			panic(err)
-		}
 		c.String(http.StatusOK, "device %v posted", res.InsertedID)
 	})
 

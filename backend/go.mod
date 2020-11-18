@@ -1,4 +1,4 @@
-module homebrewn.com
+module github.com/Kumikurre/homebrewn/backend
 
 go 1.15
 

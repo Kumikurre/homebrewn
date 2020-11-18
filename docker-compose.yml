@@ -8,13 +8,6 @@ services:
       - internal
 
   back:
-    # image: golang:latest
-    # volumes:
-    #   - ./backend:/go/src/go-with-compose
-    # working_dir: /go/src/go-with-compose
-    # ports:
-    #   - "8080:8080"
-    # command: go run main.go
     build:
       context: backend
       dockerfile: Dockerfile

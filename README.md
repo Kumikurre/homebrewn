@@ -3,9 +3,17 @@ IoT course homebrewery monitoring system
 
 ## Instructions on running
 To spin up the docker container running backend, web server and the frontend:
-`docker-compose build && docker-compose up`
-To test backend, run client (posts devices to database and gets them)
-`cd client`
+
+`docker-compose up --build`
+
+To spin up dev env in docker, run:
+
+`docker-compose -f docker-compose.yml -f docker-compose-dev.yml up --build`
+
+To test backend, run a simple test client (posts devices to database and gets them)
+
+`cd config`
+
 `python3 client.py`
 
 ## Components
@@ -13,6 +21,4 @@ To test backend, run client (posts devices to database and gets them)
 The backend consists of a nginx-web server which runs a GO-backend.
 ### Frontend
 The nginx web server also serves a mithril-based frontend.
-### Gateway
 ### Client
-Just a python script for now

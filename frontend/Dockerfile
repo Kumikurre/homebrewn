@@ -18,6 +18,6 @@ ENV PATH /node_modules/.bin:$PATH
 COPY package.json /src/package.json
 RUN npm install
 
-
+RUN ["chmod", "+x", "./build.sh"]
 # generate build
 CMD ["./build.sh"]

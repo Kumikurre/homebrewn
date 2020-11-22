@@ -44,21 +44,21 @@ print(bubble)
 ###
 
 # Delete all temp measurements
-for i in temp:
-    name = data.get('devices')[0].get('name')
-    timestamp = i.get('timestamp')
-    r = requests.delete(f'http://localhost:8080/temp_measurement/{name}/{timestamp}')
-    print(r.status_code)
+# for i in temp:
+#     name = data.get('devices')[0].get('name')
+#     timestamp = i.get('timestamp')
+#     r = requests.delete(f'http://localhost:8080/temp_measurement/{name}/{timestamp}')
+#     print(r.status_code)
 
-# Delete all bubble measurements
-for i in bubble:
-    name = data.get('devices')[1].get('name')
-    timestamp = i.get('timestamp')
-    r = requests.delete(f'http://localhost:8080/bub_measurement/{name}/{timestamp}')
-    print(r.status_code)
+# # Delete all bubble measurements
+# for i in bubble:
+#     name = data.get('devices')[1].get('name')
+#     timestamp = i.get('timestamp')
+#     r = requests.delete(f'http://localhost:8080/bub_measurement/{name}/{timestamp}')
+#     print(r.status_code)
 
-# Delete all devices
-for i in devices:
-    name = i.get('name')
-    r = requests.delete(f'http://localhost:8080/device/{name}')
-    print(r.status_code)
+# # Delete all devices
+# for i in devices:
+#     name = i.get('name')
+#     r = requests.delete(f'http://localhost:8080/device/{name}')
+#     print(r.status_code)

@@ -1,9 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 
-
-
-
 /*
  * SplitChunksPlugin is enabled by default and replaced
  * deprecated CommonsChunkPlugin. It automatically identifies modules which
@@ -18,36 +15,52 @@ const webpack = require('webpack');
  */
 
 /*
- * We've enabled TerserPlugin for you! This minifies your app
- * in order to load faster and run less javascript.
- *
- * https://github.com/webpack-contrib/terser-webpack-plugin
- *
- */
+* We've enabled TerserPlugin for you! This minifies your app
+* in order to load faster and run less javascript.
+*
+* https://github.com/webpack-contrib/terser-webpack-plugin
+*
+*/
 
 const TerserPlugin = require('terser-webpack-plugin');
-
-
-
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   mode: 'development',
-  plugins: [new webpack.ProgressPlugin()],
+  entry: [
+    "./src/index.js"
+    ],
+  output:{
+    globalObject: 'this'
+  },
+  plugins: [
+    new webpack.ProgressPlugin(),
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // all options are optional
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+      ignoreOrder: false, // Enable to remove warnings about conflicting order
+    })
+  ],
 
   module: {
-    rules: [{
-      test: /.css$/,
-
-      use: [{
-        loader: "style-loader"
-      }, {
-        loader: "css-loader",
-
-        options: {
-          sourceMap: true
-        }
-      }]
-    }]
+    rules: [
+    {
+      test: /\.css$/,
+      use: [
+        {
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            // you can specify a publicPath here
+            // by default it uses publicPath in webpackOptions.output
+            publicPath: '../',
+          },
+        },
+        'css-loader',
+      ],
+    }
+  ]
   },
 
   optimization: {

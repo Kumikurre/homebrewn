@@ -1,14 +1,39 @@
-[
-    {
-        "name": "test_name",
-        "device_id": "123abc"
-    },
-    {
-        "name": "test_name2",
-        "device_id": "123abd"
-    },
-    {
-        "name": "test_name4",
-        "device_id": "123abe"
-    }
-]
+{
+    "devices": [
+        {
+            "name": "test_name",
+            "censors": [
+                "temperature",
+                "bubble"
+            ]
+        },
+        {
+            "name": "test_name2",
+            "censors": [
+                "bubble"
+            ]
+        },
+        {
+            "name": "test_name4",
+            "censors": [
+                "temperature"
+            ]
+        }
+    ],
+
+    "temp_measurements" : [
+        {
+            "value": "100.123",
+            "measurement_unit": "°C"
+        },
+        {
+            "value": "122.123",
+            "measurement_unit": "jotaki"
+        },
+        {
+            "value": "100",
+            "measurement_unit": "°C"
+        }
+
+    ]
+}

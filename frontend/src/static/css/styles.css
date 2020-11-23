@@ -1,0 +1,61 @@
+
+html{
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#header {
+    text-align: center;
+}
+
+#header h1 {
+    font-size: 5rem;
+    color: #1f41ff;
+    font-family: 'Niconne', cursive;
+    font-weight: 700;
+    text-shadow: 5px 5px 0px #ebae2b, 
+                10px 10px 0px #77ef32, 
+                15px 15px 0px #46b59b, 
+                20px 20px 0px #017e7f, 
+                25px 25px 0px #052939, 
+                30px 30px 0px #c11a2b, 
+                35px 35px 0px #c11a2b, 
+                40px 40px 0px #c11a2b, 
+                45px 45px 0px #c11a2b;
+}
+
+
+
+body{
+    background-color: peru;
+}
+
+#content-container{
+    background-color: orangered;
+}
+
+#devicelist{
+    background-color: rgb(224, 224, 224);
+}
+
+.device-list-item{
+    background-color: white;
+    padding: 1em;
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+}
+.device-name{
+    font-weight: bold;
+    text-decoration: underline;
+}
+#graph{
+    background-color: yellowgreen;
+}
+
+.row {
+    display: flex;
+  }
+  
+.maincolumn {
+    flex: 50%;
+}

@@ -19,4 +19,3 @@ var Device = {
 }
 
 module.exports = Device
-console.log("Device")

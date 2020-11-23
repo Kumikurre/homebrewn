@@ -27,7 +27,7 @@ type Device struct {
 // TempMeasurement information
 type TempMeasurement struct {
 	Device          Device  `bson:"device" json:"device"`
-	Timestamp       int64   `bson:"_id" json:"timestamp"`
+	Timestamp       int64   `bson:"timestamp" json:"timestamp"`
 	Value           float64 `json:"value" bson:"value"`
 	MeasurementUnit string  `json:"measurement_unit" bson:"measurement_unit"`
 }
@@ -35,7 +35,7 @@ type TempMeasurement struct {
 // BubMeasurement information
 type BubMeasurement struct {
 	Device    Device `bson:"device" json:"device"`
-	Timestamp int64  `bson:"_id" json:"timestamp"`
+	Timestamp int64  `bson:"timestamp" json:"timestamp"`
 }
 
 // Init mongo database
@@ -127,9 +127,12 @@ func DeleteDevice(c context.Context, name string) error {
 }
 
 // GetAllBubMeasurements returns all bubble measurements from database
-func GetAllBubMeasurements(c context.Context) ([]BubMeasurement, error) {
+func GetAllBubMeasurements(c context.Context,
+	startTime int64, endTime int64) ([]BubMeasurement, error) {
 	var returnMeasurements []BubMeasurement
-	cur, err := bubMeasurements.Find(c, bson.D{})
+
+	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime}}
+	cur, err := bubMeasurements.Find(c, filter)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -153,52 +156,65 @@ func GetAllBubMeasurements(c context.Context) ([]BubMeasurement, error) {
 	return returnMeasurements, nil
 }
 
-// GetBubMeasurement returns one bubble measurement from database
-func GetBubMeasurement(c context.Context, deviceName string, timestamp int64) (BubMeasurement, error) {
-	var bubMeasurement BubMeasurement
-	var device Device
+// GetBubMeasurements returns bubble measurements between timeframe from database
+func GetBubMeasurements(c context.Context, deviceName string,
+	startTime int64, endTime int64) ([]BubMeasurement, error) {
+	var returnMeasurements []BubMeasurement
 
 	device, err := GetDevice(c, deviceName)
 	if err != nil {
-		return BubMeasurement{}, errors.New("Measurement not found")
+		return []BubMeasurement{}, errors.New("Measurement not found")
 	}
 
-	err = bubMeasurements.FindOne(c, bson.M{"_id": timestamp, "device": device}).Decode(&bubMeasurement)
+	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime},
+		"device": device}
+	cur, err := bubMeasurements.Find(c, filter)
 	if err != nil {
-		var notFoundErrorMsg = "mongo: no documents in result"
-		if err.Error() == notFoundErrorMsg {
-			return BubMeasurement{}, errors.New("Measurement not found")
+		log.Fatal(err)
+	}
+	defer cur.Close(c)
+	for cur.Next(c) {
+		var bubMeasurement BubMeasurement
+		err := cur.Decode(&bubMeasurement)
+		if err != nil {
+			panic(err)
 		}
+		returnMeasurements = append(returnMeasurements, bubMeasurement)
+	}
+	if err := cur.Err(); err != nil {
 		panic(err)
 	}
 
-	return bubMeasurement, nil
+	if returnMeasurements == nil {
+		return []BubMeasurement{}, errors.New("Measurements not found")
+	}
+
+	return returnMeasurements, nil
 }
 
 // InsertBubMeasurement adds one bubble measurement to database
 func InsertBubMeasurement(c context.Context, bubMeasurement BubMeasurement) error {
 	_, err := bubMeasurements.InsertOne(c, bubMeasurement)
 	if err != nil {
-		merr := err.(mongo.WriteException)
-		errCode := merr.WriteErrors[0].Code
-		if errCode == 11000 {
-			return errors.New("Measurement already exists")
-		}
 		panic(err)
 	}
 
 	return nil
 }
 
-// DeleteBubMeasurement returns one bubble measurement from database
-func DeleteBubMeasurement(c context.Context, deviceName string, timestamp int64) error {
+// DeleteBubMeasurements deletes bubble measurements between timeframe from database
+func DeleteBubMeasurements(c context.Context, deviceName string,
+	startTime int64, endTime int64) error {
 	var device Device
 
 	device, err := GetDevice(c, deviceName)
 	if err != nil {
 		return errors.New("Device not found")
 	}
-	res, err := bubMeasurements.DeleteOne(c, bson.M{"_id": timestamp, "device": device})
+
+	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime},
+		"device": device}
+	res, err := bubMeasurements.DeleteMany(c, filter)
 	if err != nil {
 		panic(err)
 	}
@@ -209,10 +225,12 @@ func DeleteBubMeasurement(c context.Context, deviceName string, timestamp int64)
 	return nil
 }
 
-// GetAllTempMeasurements returns all temp measurements from database
-func GetAllTempMeasurements(c context.Context) ([]TempMeasurement, error) {
+// GetAllTempMeasurements returns all temp measurements from between timeframe database
+func GetAllTempMeasurements(c context.Context,
+	startTime int64, endTime int64) ([]TempMeasurement, error) {
 	var returnMeasurements []TempMeasurement
-	cur, err := tempMeasurements.Find(c, bson.D{})
+	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime}}
+	cur, err := tempMeasurements.Find(c, filter)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -236,52 +254,65 @@ func GetAllTempMeasurements(c context.Context) ([]TempMeasurement, error) {
 	return returnMeasurements, nil
 }
 
-// GetTempMeasurement returns one temp measurement from database
-func GetTempMeasurement(c context.Context, deviceName string, timestamp int64) (TempMeasurement, error) {
-	var tempMeasurement TempMeasurement
-	var device Device
+// GetTempMeasurements returns temp measurements between timeframe from database
+func GetTempMeasurements(c context.Context, deviceName string,
+	startTime int64, endTime int64) ([]TempMeasurement, error) {
+	var returnMeasurements []TempMeasurement
 
 	device, err := GetDevice(c, deviceName)
 	if err != nil {
-		return TempMeasurement{}, errors.New("Device not found")
+		return []TempMeasurement{}, errors.New("Measurement not found")
 	}
 
-	err = tempMeasurements.FindOne(c, bson.M{"_id": timestamp, "device": device}).Decode(&tempMeasurement)
+	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime},
+		"device": device}
+	cur, err := tempMeasurements.Find(c, filter)
 	if err != nil {
-		var notFoundErrorMsg = "mongo: no documents in result"
-		if err.Error() == notFoundErrorMsg {
-			return TempMeasurement{}, errors.New("Measurement not found")
+		log.Fatal(err)
+	}
+	defer cur.Close(c)
+	for cur.Next(c) {
+		var tempMeasurement TempMeasurement
+		err := cur.Decode(&tempMeasurement)
+		if err != nil {
+			panic(err)
 		}
+		returnMeasurements = append(returnMeasurements, tempMeasurement)
+	}
+	if err := cur.Err(); err != nil {
 		panic(err)
 	}
 
-	return tempMeasurement, nil
+	if returnMeasurements == nil {
+		return []TempMeasurement{}, errors.New("Measurements not found")
+	}
+
+	return returnMeasurements, nil
 }
 
 // InsertTempMeasurement adds one temp measurement to database
 func InsertTempMeasurement(c context.Context, tempMeasurement TempMeasurement) error {
 	_, err := tempMeasurements.InsertOne(c, tempMeasurement)
 	if err != nil {
-		merr := err.(mongo.WriteException)
-		errCode := merr.WriteErrors[0].Code
-		if errCode == 11000 {
-			return errors.New("Measurement already exists")
-		}
 		panic(err)
 	}
 
 	return nil
 }
 
-// DeleteTempMeasurement deletes one temp measurement from database
-func DeleteTempMeasurement(c context.Context, deviceName string, timestamp int64) error {
+// DeleteTempMeasurements deletes bubble measurements between timeframe from database
+func DeleteTempMeasurements(c context.Context, deviceName string,
+	startTime int64, endTime int64) error {
 	var device Device
 
 	device, err := GetDevice(c, deviceName)
 	if err != nil {
 		return errors.New("Device not found")
 	}
-	res, err := tempMeasurements.DeleteOne(c, bson.M{"_id": timestamp, "device": device})
+
+	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime},
+		"device": device}
+	res, err := tempMeasurements.DeleteMany(c, filter)
 	if err != nil {
 		panic(err)
 	}

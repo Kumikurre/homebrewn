@@ -55,9 +55,12 @@ func DeleteDevice(c *gin.Context) {
 	}
 }
 
-// GetBubMeasurements returns all bubble measurements
-func GetBubMeasurements(c *gin.Context) {
-	bubMeasurements, err := database.GetAllBubMeasurements(c)
+// GetAllBubMeasurements returns all bubble measurements
+func GetAllBubMeasurements(c *gin.Context) {
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
+	bubMeasurements, err := database.GetAllBubMeasurements(c,
+		startTime, endTime)
 	if err != nil {
 		c.Status(http.StatusNotFound)
 	} else {
@@ -65,11 +68,13 @@ func GetBubMeasurements(c *gin.Context) {
 	}
 }
 
-// GetBubMeasurement returns a bubble measurement
-func GetBubMeasurement(c *gin.Context) {
+// GetBubMeasurements returns bubble measurements from a time frame
+func GetBubMeasurements(c *gin.Context) {
 	deviceName := c.Param("device_name")
-	timestamp := helpers.StringToIntConverter(c.Param("timestamp"))
-	bubMeasurement, err := database.GetBubMeasurement(c, deviceName, timestamp)
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
+	bubMeasurement, err := database.GetBubMeasurements(c, deviceName,
+		startTime, endTime)
 	if err != nil {
 		c.Status(http.StatusNotFound)
 	} else {
@@ -81,13 +86,13 @@ func GetBubMeasurement(c *gin.Context) {
 func PostBubMeasurement(c *gin.Context) {
 	deviceName := c.Param("device_name")
 	device, err := database.GetDevice(c, deviceName)
-	if err != nil {
+	if err != nil || !helpers.Contains(device.Censors, "bubble") {
 		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
 	bubMeasurement := database.BubMeasurement{
 		Device:    device,
-		Timestamp: time.Now().Unix(),
+		Timestamp: time.Now().UnixNano(),
 	}
 	err = database.InsertBubMeasurement(c, bubMeasurement)
 	if err != nil {
@@ -98,11 +103,13 @@ func PostBubMeasurement(c *gin.Context) {
 
 }
 
-// DeleteBubMeasurement inserts a device to a database
-func DeleteBubMeasurement(c *gin.Context) {
+// DeleteBubMeasurements deletes bubble measurements from a time frame
+func DeleteBubMeasurements(c *gin.Context) {
 	deviceName := c.Param("device_name")
-	timestamp := helpers.StringToIntConverter(c.Param("timestamp"))
-	err := database.DeleteBubMeasurement(c, deviceName, timestamp)
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
+	err := database.DeleteBubMeasurements(c, deviceName,
+		startTime, endTime)
 	if err != nil {
 		c.Status(http.StatusNotFound)
 	} else {
@@ -110,9 +117,12 @@ func DeleteBubMeasurement(c *gin.Context) {
 	}
 }
 
-// GetTempMeasurements returns all temp measurements
-func GetTempMeasurements(c *gin.Context) {
-	tempMeasurements, err := database.GetAllTempMeasurements(c)
+// GetAllTempMeasurements returns all temp measurements
+func GetAllTempMeasurements(c *gin.Context) {
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
+	tempMeasurements, err := database.GetAllTempMeasurements(c,
+		startTime, endTime)
 	if err != nil {
 		c.Status(http.StatusNotFound)
 	} else {
@@ -120,11 +130,13 @@ func GetTempMeasurements(c *gin.Context) {
 	}
 }
 
-// GetTempMeasurement returns a temp measurement
-func GetTempMeasurement(c *gin.Context) {
+// GetTempMeasurements returns temp measurements from a time frame
+func GetTempMeasurements(c *gin.Context) {
 	deviceName := c.Param("device_name")
-	timestamp := helpers.StringToIntConverter(c.Param("timestamp"))
-	tempMeasurement, err := database.GetTempMeasurement(c, deviceName, timestamp)
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
+	tempMeasurement, err := database.GetTempMeasurements(c, deviceName,
+		startTime, endTime)
 	if err != nil {
 		c.Status(http.StatusNotFound)
 	} else {
@@ -138,13 +150,13 @@ func PostTempMeasurement(c *gin.Context) {
 	device, err := database.GetDevice(c, deviceName)
 	var tempMeasurementRead helpers.TempMeasurementRead
 	c.BindJSON(&tempMeasurementRead)
-	if err != nil {
+	if err != nil || !helpers.Contains(device.Censors, "temperature") {
 		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
 	tempMeasurement := database.TempMeasurement{
 		Device:          device,
-		Timestamp:       time.Now().Unix(),
+		Timestamp:       time.Now().UnixNano(),
 		Value:           helpers.StringToFloatConverter(tempMeasurementRead.Value),
 		MeasurementUnit: tempMeasurementRead.MeasurementUnit,
 	}
@@ -157,11 +169,13 @@ func PostTempMeasurement(c *gin.Context) {
 
 }
 
-// DeleteTempMeasurement inserts a device to a database
-func DeleteTempMeasurement(c *gin.Context) {
+// DeleteTempMeasurements deletes temp measurements from a time frame
+func DeleteTempMeasurements(c *gin.Context) {
 	deviceName := c.Param("device_name")
-	timestamp := helpers.StringToIntConverter(c.Param("timestamp"))
-	err := database.DeleteTempMeasurement(c, deviceName, timestamp)
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
+	err := database.DeleteTempMeasurements(c, deviceName,
+		startTime, endTime)
 	if err != nil {
 		c.Status(http.StatusNotFound)
 	} else {

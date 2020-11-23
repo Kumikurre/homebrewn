@@ -25,3 +25,13 @@ func StringToFloatConverter(stringToConvert string) float64 {
 	}
 	return n
 }
+
+// Contains tells if string is in a slice
+func Contains(strList []string, str string) bool {
+	for _, v := range strList {
+		if v == str {
+			return true
+		}
+	}
+	return false
+}

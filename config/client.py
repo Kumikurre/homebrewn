@@ -43,23 +43,23 @@ devices = requests.get('http://localhost:8080/devices').json()
 print(devices)
 
 # Get all temp measurements
-temp = requests.get('http://localhost:8080/temp_measurements/').json()
+temp = requests.get('http://localhost:8080/temp_measurements_all/').json()
 print(temp)
 
 # Get all bubble measurements
-bubble = requests.get('http://localhost:8080/bub_measurements/').json()
+bubble = requests.get('http://localhost:8080/bub_measurements_all/').json()
 print(bubble)
 
 ###
 
  # Delete all temp measurements
 name = data.get('devices')[0].get('name')
-r = requests.delete(f'http://localhost:8080/temp_measurements/{name}/from/0/to/{time.time_ns()}')
+r = requests.delete(f'http://localhost:8080/temp_measurements/{name}/from/0')
 print('200 =', r.status_code)
 
 
  # Delete all temp measurements again
-r = requests.delete(f'http://localhost:8080/temp_measurements/{name}/from/0/to/{time.time_ns()}')
+r = requests.delete(f'http://localhost:8080/temp_measurements/{name}/from/0')
 print('404 =', r.status_code)
 
 # Delete all bubble measurements

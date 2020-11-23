@@ -57,7 +57,10 @@ func DeleteDevice(c *gin.Context) {
 
 // GetAllBubMeasurements returns all bubble measurements
 func GetAllBubMeasurements(c *gin.Context) {
-	bubMeasurements, err := database.GetAllBubMeasurements(c)
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
+	bubMeasurements, err := database.GetAllBubMeasurements(c,
+		startTime, endTime)
 	if err != nil {
 		c.Status(http.StatusNotFound)
 	} else {
@@ -68,8 +71,8 @@ func GetAllBubMeasurements(c *gin.Context) {
 // GetBubMeasurements returns bubble measurements from a time frame
 func GetBubMeasurements(c *gin.Context) {
 	deviceName := c.Param("device_name")
-	startTime := helpers.StringToIntConverter(c.Param("start_time"))
-	endTime := helpers.StringToIntConverter(c.Param("end_time"))
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
 	bubMeasurement, err := database.GetBubMeasurements(c, deviceName,
 		startTime, endTime)
 	if err != nil {
@@ -103,8 +106,8 @@ func PostBubMeasurement(c *gin.Context) {
 // DeleteBubMeasurements deletes bubble measurements from a time frame
 func DeleteBubMeasurements(c *gin.Context) {
 	deviceName := c.Param("device_name")
-	startTime := helpers.StringToIntConverter(c.Param("start_time"))
-	endTime := helpers.StringToIntConverter(c.Param("end_time"))
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
 	err := database.DeleteBubMeasurements(c, deviceName,
 		startTime, endTime)
 	if err != nil {
@@ -116,7 +119,10 @@ func DeleteBubMeasurements(c *gin.Context) {
 
 // GetAllTempMeasurements returns all temp measurements
 func GetAllTempMeasurements(c *gin.Context) {
-	tempMeasurements, err := database.GetAllTempMeasurements(c)
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
+	tempMeasurements, err := database.GetAllTempMeasurements(c,
+		startTime, endTime)
 	if err != nil {
 		c.Status(http.StatusNotFound)
 	} else {
@@ -127,8 +133,8 @@ func GetAllTempMeasurements(c *gin.Context) {
 // GetTempMeasurements returns temp measurements from a time frame
 func GetTempMeasurements(c *gin.Context) {
 	deviceName := c.Param("device_name")
-	startTime := helpers.StringToIntConverter(c.Param("start_time"))
-	endTime := helpers.StringToIntConverter(c.Param("end_time"))
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
 	tempMeasurement, err := database.GetTempMeasurements(c, deviceName,
 		startTime, endTime)
 	if err != nil {
@@ -166,8 +172,8 @@ func PostTempMeasurement(c *gin.Context) {
 // DeleteTempMeasurements deletes temp measurements from a time frame
 func DeleteTempMeasurements(c *gin.Context) {
 	deviceName := c.Param("device_name")
-	startTime := helpers.StringToIntConverter(c.Param("start_time"))
-	endTime := helpers.StringToIntConverter(c.Param("end_time"))
+	startTime, endTime := helpers.ParamReader(c.Param("start_time"),
+		c.Param("end_time"))
 	err := database.DeleteTempMeasurements(c, deviceName,
 		startTime, endTime)
 	if err != nil {

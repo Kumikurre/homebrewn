@@ -127,9 +127,12 @@ func DeleteDevice(c context.Context, name string) error {
 }
 
 // GetAllBubMeasurements returns all bubble measurements from database
-func GetAllBubMeasurements(c context.Context) ([]BubMeasurement, error) {
+func GetAllBubMeasurements(c context.Context,
+	startTime int64, endTime int64) ([]BubMeasurement, error) {
 	var returnMeasurements []BubMeasurement
-	cur, err := bubMeasurements.Find(c, bson.D{})
+
+	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime}}
+	cur, err := bubMeasurements.Find(c, filter)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -222,10 +225,12 @@ func DeleteBubMeasurements(c context.Context, deviceName string,
 	return nil
 }
 
-// GetAllTempMeasurements returns all temp measurements from database
-func GetAllTempMeasurements(c context.Context) ([]TempMeasurement, error) {
+// GetAllTempMeasurements returns all temp measurements from between timeframe database
+func GetAllTempMeasurements(c context.Context,
+	startTime int64, endTime int64) ([]TempMeasurement, error) {
 	var returnMeasurements []TempMeasurement
-	cur, err := tempMeasurements.Find(c, bson.D{})
+	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime}}
+	cur, err := tempMeasurements.Find(c, filter)
 	if err != nil {
 		log.Fatal(err)
 	}

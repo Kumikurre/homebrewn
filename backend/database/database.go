@@ -13,9 +13,10 @@ import (
 )
 
 var (
-	devices          *mongo.Collection
-	tempMeasurements *mongo.Collection
-	bubMeasurements  *mongo.Collection
+	devices           *mongo.Collection
+	deviceTargetTemps *mongo.Collection
+	tempMeasurements  *mongo.Collection
+	bubMeasurements   *mongo.Collection
 )
 
 // Device information
@@ -24,9 +25,16 @@ type Device struct {
 	Censors []string `json:"censors" bson:"censors"`
 }
 
+// DeviceTargetTemp information
+type DeviceTargetTemp struct {
+	Device          string  `bson:"_id" json:"device"`
+	Value           float64 `json:"value" bson:"value"`
+	MeasurementUnit string  `json:"measurement_unit" bson:"measurement_unit"`
+}
+
 // TempMeasurement information
 type TempMeasurement struct {
-	Device          Device  `bson:"device" json:"device"`
+	Device          string  `bson:"device" json:"device"`
 	Timestamp       int64   `bson:"timestamp" json:"timestamp"`
 	Value           float64 `json:"value" bson:"value"`
 	MeasurementUnit string  `json:"measurement_unit" bson:"measurement_unit"`
@@ -34,7 +42,7 @@ type TempMeasurement struct {
 
 // BubMeasurement information
 type BubMeasurement struct {
-	Device    Device `bson:"device" json:"device"`
+	Device    string `bson:"device" json:"device"`
 	Timestamp int64  `bson:"timestamp" json:"timestamp"`
 }
 
@@ -51,6 +59,7 @@ func Init(uri string) {
 	}
 
 	devices = client.Database("iot").Collection("devices")
+	deviceTargetTemps = client.Database("iot").Collection("deviceTargetTemps")
 	tempMeasurements = client.Database("iot").Collection("tempMeasurements")
 	bubMeasurements = client.Database("iot").Collection("bubMeasurements")
 }
@@ -126,6 +135,71 @@ func DeleteDevice(c context.Context, name string) error {
 	return nil
 }
 
+// GetAllDeviceTargetTemps returns all device target temps from database
+func GetAllDeviceTargetTemps(c context.Context) ([]DeviceTargetTemp, error) {
+	var returnDevices []DeviceTargetTemp
+	cur, err := deviceTargetTemps.Find(c, bson.D{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cur.Close(c)
+	for cur.Next(c) {
+		var deviceTargetTemp DeviceTargetTemp
+		err := cur.Decode(&deviceTargetTemp)
+		if err != nil {
+			panic(err)
+		}
+		returnDevices = append(returnDevices, deviceTargetTemp)
+	}
+	if err := cur.Err(); err != nil {
+		panic(err)
+	}
+
+	if returnDevices == nil {
+		return []DeviceTargetTemp{}, errors.New("Device target temps not found")
+	}
+
+	return returnDevices, nil
+}
+
+// GetDeviceTargetTemp returns one device target temp from database
+func GetDeviceTargetTemp(c context.Context, deviceName string) (DeviceTargetTemp, error) {
+	var deviceTargetTemp DeviceTargetTemp
+
+	err := deviceTargetTemps.FindOne(c, bson.M{"_id": deviceName}).Decode(&deviceTargetTemp)
+	if err != nil {
+		var notFoundErrorMsg = "mongo: no documents in result"
+		if err.Error() == notFoundErrorMsg {
+			return DeviceTargetTemp{}, errors.New("Device target temp not found")
+		}
+		panic(err)
+	}
+
+	return deviceTargetTemp, nil
+}
+
+// UpsertDeviceTargetTemp adds one device target temp to database
+func UpsertDeviceTargetTemp(c context.Context, deviceTargetTemp DeviceTargetTemp) error {
+	opts := options.FindOneAndReplace().SetUpsert(true)
+	filter := bson.M{"_id": deviceTargetTemp.Device}
+	deviceTargetTemps.FindOneAndReplace(c, filter, deviceTargetTemp, opts)
+
+	return nil
+}
+
+// DeleteDeviceTargetTemp returns one device target temp from database
+func DeleteDeviceTargetTemp(c context.Context, deviceName string) error {
+	res, err := deviceTargetTemps.DeleteOne(c, bson.M{"_id": deviceName})
+	if err != nil {
+		panic(err)
+	}
+	if res.DeletedCount == 0 {
+		return errors.New("Device not found")
+	}
+
+	return nil
+}
+
 // GetAllBubMeasurements returns all bubble measurements from database
 func GetAllBubMeasurements(c context.Context,
 	startTime int64, endTime int64) ([]BubMeasurement, error) {
@@ -161,13 +235,8 @@ func GetBubMeasurements(c context.Context, deviceName string,
 	startTime int64, endTime int64) ([]BubMeasurement, error) {
 	var returnMeasurements []BubMeasurement
 
-	device, err := GetDevice(c, deviceName)
-	if err != nil {
-		return []BubMeasurement{}, errors.New("Measurement not found")
-	}
-
 	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime},
-		"device": device}
+		"device": deviceName}
 	cur, err := bubMeasurements.Find(c, filter)
 	if err != nil {
 		log.Fatal(err)
@@ -205,15 +274,9 @@ func InsertBubMeasurement(c context.Context, bubMeasurement BubMeasurement) erro
 // DeleteBubMeasurements deletes bubble measurements between timeframe from database
 func DeleteBubMeasurements(c context.Context, deviceName string,
 	startTime int64, endTime int64) error {
-	var device Device
-
-	device, err := GetDevice(c, deviceName)
-	if err != nil {
-		return errors.New("Device not found")
-	}
 
 	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime},
-		"device": device}
+		"device": deviceName}
 	res, err := bubMeasurements.DeleteMany(c, filter)
 	if err != nil {
 		panic(err)
@@ -259,13 +322,8 @@ func GetTempMeasurements(c context.Context, deviceName string,
 	startTime int64, endTime int64) ([]TempMeasurement, error) {
 	var returnMeasurements []TempMeasurement
 
-	device, err := GetDevice(c, deviceName)
-	if err != nil {
-		return []TempMeasurement{}, errors.New("Measurement not found")
-	}
-
 	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime},
-		"device": device}
+		"device": deviceName}
 	cur, err := tempMeasurements.Find(c, filter)
 	if err != nil {
 		log.Fatal(err)
@@ -303,15 +361,9 @@ func InsertTempMeasurement(c context.Context, tempMeasurement TempMeasurement) e
 // DeleteTempMeasurements deletes bubble measurements between timeframe from database
 func DeleteTempMeasurements(c context.Context, deviceName string,
 	startTime int64, endTime int64) error {
-	var device Device
-
-	device, err := GetDevice(c, deviceName)
-	if err != nil {
-		return errors.New("Device not found")
-	}
 
 	filter := bson.M{"timestamp": bson.M{"$gt": startTime, "$lt": endTime},
-		"device": device}
+		"device": deviceName}
 	res, err := tempMeasurements.DeleteMany(c, filter)
 	if err != nil {
 		panic(err)

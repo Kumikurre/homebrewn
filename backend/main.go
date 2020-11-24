@@ -16,6 +16,11 @@ func main() {
 	router.GET("/device/:name", routes.GetDevice)
 	router.DELETE("/device/:name", routes.DeleteDevice)
 
+	router.POST("/device_target_temp/:device_name", routes.PostDeviceTargetTemp)
+	router.GET("/device_target_temps", routes.GetDeviceTargetTemps)
+	router.GET("/device_target_temp/:device_name", routes.GetDeviceTargetTemp)
+	router.DELETE("/device_target_temp/:device_name", routes.DeleteDeviceTargetTemp)
+
 	router.POST("/bub_measurement/:device_name", routes.PostBubMeasurement)
 
 	router.GET("/bub_measurements_all", routes.GetAllBubMeasurements)

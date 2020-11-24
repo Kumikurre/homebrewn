@@ -12,6 +12,18 @@ for i in data.get('devices'):
     r = requests.post('http://localhost:8080/device', json=i)
     print('200 =', r.status_code)
 
+# Upsert device target temps
+for i in data.get('device_target_temps'):
+    name = i.get('name')
+    r = requests.post(f'http://localhost:8080/device_target_temp/{name}', json=i)
+    print('200 =', r.status_code)
+
+# Upsert device target temps again
+for i in data.get('device_target_temps'):
+    name = i.get('name')
+    r = requests.post(f'http://localhost:8080/device_target_temp/{name}', json=i)
+    print('200 =', r.status_code)
+
 # Add temp measurements
 for i in data.get('temp_measurements'):
     name = data.get('devices')[0].get('name')
@@ -38,9 +50,13 @@ for i in range(4):
 
 ###
 
-# Get all devices measurements
+# Get all devices
 devices = requests.get('http://localhost:8080/devices').json()
 print(devices)
+
+# Get all device target temps
+device_target_temps = requests.get('http://localhost:8080/device_target_temps').json()
+print(device_target_temps)
 
 # Get all temp measurements
 temp = requests.get('http://localhost:8080/temp_measurements_all/').json()
@@ -71,6 +87,12 @@ print('200 =', r.status_code)
 r = requests.delete(f'http://localhost:8080/bub_measurements/{name}/from/0/to/{time.time_ns()}')
 print('404 =', r.status_code)
 
+ # Delete all device target temps
+for i in device_target_temps:
+    name = i.get('device')
+    r = requests.delete(f'http://localhost:8080/device_target_temp/{name}')
+    print('200 =', r.status_code)
+
  # Delete all devices
 for i in devices:
     name = i.get('name')
@@ -79,4 +101,8 @@ for i in devices:
 
  # Delete device that does not exists
 r = requests.delete('http://localhost:8080/device/sdfkdskfj')
+print('404 =', r.status_code)
+
+ # Delete device target temp that does not exists
+r = requests.delete('http://localhost:8080/device_target_temp/sdfkdskfj')
 print('404 =', r.status_code)

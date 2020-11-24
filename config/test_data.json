@@ -21,6 +21,19 @@
         }
     ],
 
+    "device_target_temps": [
+        {
+            "name": "test_name",
+            "value": "100.123",
+            "measurement_unit": "°C"
+        },
+        {
+            "name": "test_name4",
+            "value": "1011",
+            "measurement_unit": "°F"
+        }
+    ],
+
     "temp_measurements" : [
         {
             "value": "47.123",

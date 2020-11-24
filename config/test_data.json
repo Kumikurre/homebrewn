@@ -23,15 +23,15 @@
 
     "temp_measurements" : [
         {
-            "value": "100.123",
+            "value": "47.123",
             "measurement_unit": "°C"
         },
         {
-            "value": "122.123",
-            "measurement_unit": "jotaki"
+            "value": "44.123",
+            "measurement_unit": "°C"
         },
         {
-            "value": "100",
+            "value": "41.5",
             "measurement_unit": "°C"
         }
 

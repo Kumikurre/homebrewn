@@ -46,7 +46,12 @@ body{
     font-weight: bold;
     text-decoration: underline;
 }
-#graph{
+#graph {
+    background-color: #f0f0f0;
+    margin: 10px;
+}
+
+#graphcontrols{
     background-color: yellowgreen;
 }
 

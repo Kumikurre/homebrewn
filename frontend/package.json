@@ -11,6 +11,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "c3": "^0.7.20",
+    "dygraphs": "^2.1.0",
     "global": "^4.4.0",
     "mithril": "^2.0.4"
   },

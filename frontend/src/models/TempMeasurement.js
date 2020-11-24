@@ -7,18 +7,16 @@ var TempMeasurement = {
     loadList: function() {
         return m.request({
             method: "GET",
-            url:  apiUrl + "temp_measurements"
+            url:  apiUrl + "temp_measurements_all"
         })
         .then(function(result) {
-            console.log("result:")
-            console.log(result)
+
             if(result === null){
                 console.log("Whoopsie; no data from the endpoint: /temp_measurements")
             }
-            console.log("Tempmeasurement:")
-            console.log(TempMeasurement)
-
             TempMeasurement.list = result
+
+            console.log(TempMeasurement.list)
         })
     },
 }

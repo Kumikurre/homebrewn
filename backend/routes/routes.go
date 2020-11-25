@@ -91,7 +91,7 @@ func PostDeviceTargetTemp(c *gin.Context) {
 	c.BindJSON(&tempMeasurementRead)
 	deviceTargetTemp := database.DeviceTargetTemp{
 		Device:          device.Name,
-		Value:           helpers.StringToFloatConverter(tempMeasurementRead.Value),
+		Value:           *tempMeasurementRead.Value,
 		MeasurementUnit: tempMeasurementRead.MeasurementUnit,
 	}
 	err = database.UpsertDeviceTargetTemp(c, deviceTargetTemp)
@@ -211,11 +211,15 @@ func PostTempMeasurement(c *gin.Context) {
 		return
 	}
 	var tempMeasurementRead helpers.TempMeasurementRead
-	c.BindJSON(&tempMeasurementRead)
+	err = c.BindJSON(&tempMeasurementRead)
+	if err != nil {
+		c.AbortWithStatus(http.StatusForbidden)
+		return
+	}
 	tempMeasurement := database.TempMeasurement{
 		Device:          device.Name,
 		Timestamp:       time.Now().UnixNano(),
-		Value:           helpers.StringToFloatConverter(tempMeasurementRead.Value),
+		Value:           *tempMeasurementRead.Value,
 		MeasurementUnit: tempMeasurementRead.MeasurementUnit,
 	}
 	err = database.InsertTempMeasurement(c, tempMeasurement)

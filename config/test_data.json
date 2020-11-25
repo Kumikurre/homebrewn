@@ -18,33 +18,45 @@
             "censors": [
                 "temperature"
             ]
+        },
+        {
+            "name": "👌",
+            "censors": [
+                "temperature",
+                "bubble"
+            ]
         }
     ],
 
     "device_target_temps": [
         {
             "name": "test_name",
-            "value": "100.123",
+            "value": 10.123,
+            "measurement_unit": "°C"
+        },
+        {
+            "name": "👌",
+            "value": 23.1234,
             "measurement_unit": "°C"
         },
         {
             "name": "test_name4",
-            "value": "1011",
+            "value": 100,
             "measurement_unit": "°F"
         }
     ],
 
     "temp_measurements" : [
         {
-            "value": "47.123",
+            "value": 47.123,
             "measurement_unit": "°C"
         },
         {
-            "value": "44.123",
+            "value": 44.123,
             "measurement_unit": "°C"
         },
         {
-            "value": "41.5",
+            "value": 41.5,
             "measurement_unit": "°C"
         }
 

@@ -21,8 +21,8 @@ var (
 
 // Device information
 type Device struct {
-	Name    string   `json:"name" bson:"_id"`
-	Censors []string `json:"censors" bson:"censors"`
+	Name    string   `json:"name" bson:"_id" binding:"required"`
+	Censors []string `json:"censors" bson:"censors" binding:"required"`
 }
 
 // DeviceTargetTemp information

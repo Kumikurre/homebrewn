@@ -69,40 +69,40 @@ print(bubble)
 ###
 
  # Delete all temp measurements
-name = data.get('devices')[0].get('name')
-r = requests.delete(f'http://localhost:8080/temp_measurements/{name}/from/0')
-print('200 =', r.status_code)
+#name = data.get('devices')[0].get('name')
+#r = requests.delete(f'http://localhost:8080/temp_measurements/{name}/from/0')
+#print('200 =', r.status_code)
 
 
  # Delete all temp measurements again
-r = requests.delete(f'http://localhost:8080/temp_measurements/{name}/from/0')
-print('404 =', r.status_code)
+#r = requests.delete(f'http://localhost:8080/temp_measurements/{name}/from/0')
+#print('404 =', r.status_code)
 
 # Delete all bubble measurements
-name = data.get('devices')[1].get('name')
-r = requests.delete(f'http://localhost:8080/bub_measurements/{name}/from/0/to/{time.time_ns()}')
-print('200 =', r.status_code)
+#name = data.get('devices')[1].get('name')
+#r = requests.delete(f'http://localhost:8080/bub_measurements/{name}/from/0/to/{time.time_ns()}')
+#print('200 =', r.status_code)
 
 # Delete all bubble measurements again
-r = requests.delete(f'http://localhost:8080/bub_measurements/{name}/from/0/to/{time.time_ns()}')
-print('404 =', r.status_code)
+#r = requests.delete(f'http://localhost:8080/bub_measurements/{name}/from/0/to/{time.time_ns()}')
+#print('404 =', r.status_code)
 
  # Delete all device target temps
-for i in device_target_temps:
-    name = i.get('device')
-    r = requests.delete(f'http://localhost:8080/device_target_temp/{name}')
-    print('200 =', r.status_code)
+#for i in device_target_temps:
+#    name = i.get('device')
+#    r = requests.delete(f'http://localhost:8080/device_target_temp/{name}')
+#    print('200 =', r.status_code)
 
  # Delete all devices
-for i in devices:
-    name = i.get('name')
-    r = requests.delete(f'http://localhost:8080/device/{name}')
-    print('200 =', r.status_code)
+#for i in devices:
+#    name = i.get('name')
+#    r = requests.delete(f'http://localhost:8080/device/{name}')
+#    print('200 =', r.status_code)
 
  # Delete device that does not exists
-r = requests.delete('http://localhost:8080/device/sdfkdskfj')
-print('404 =', r.status_code)
+#r = requests.delete('http://localhost:8080/device/sdfkdskfj')
+#print('404 =', r.status_code)
 
  # Delete device target temp that does not exists
-r = requests.delete('http://localhost:8080/device_target_temp/sdfkdskfj')
-print('404 =', r.status_code)
+#r = requests.delete('http://localhost:8080/device_target_temp/sdfkdskfj')
+#print('404 =', r.status_code)

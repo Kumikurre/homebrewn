@@ -21,16 +21,16 @@ var refreshTempChart = function(){
         .then(data => {
             for(val in data){
 
-                if(!(data[val].device.name in output.xs)){
-                    output.xs[data[val].device.name] = deviceIndex.toString()
+                if(!(data[val].device in output.xs)){
+                    output.xs[data[val].device] = deviceIndex.toString()
 
                     tempValues[deviceIndex.toString()] = []
-                    tempValues[data[val].device.name] = []
+                    tempValues[data[val].device] = []
 
                     deviceIndex = deviceIndex + 1
                 }
-                tempValues[data[val].device.name].push(data[val].value)
-                timeStampName = output.xs[data[val].device.name]
+                tempValues[data[val].device].push(data[val].value)
+                timeStampName = output.xs[data[val].device]
                 tempValues[timeStampName].push(convertToDate(data[val]["timestamp"]))
 
             }
@@ -65,7 +65,7 @@ var refreshTempChart = function(){
     }
 
 var convertToDate = function(timeInNanoSecond){
-    return new Date(timeInNanoSecond/100000000)
+    return new Date(timeInNanoSecond/1000000)
 }
 
 refreshTempChart()

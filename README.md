@@ -18,7 +18,7 @@ To test backend, run a simple test client (posts devices to database and gets th
 
 ## Components
 ### Backend
-The backend consists of a nginx-web server which runs a GO-backend.
+The backend consists of a nginx-web server which runs a GO-backend and mongo database.
 ### Frontend
 The nginx web server also serves a mithril-based frontend.
 ### Client

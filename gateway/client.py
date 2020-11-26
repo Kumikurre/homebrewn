@@ -119,7 +119,7 @@ if __name__ == "__main__":
                 target_temp_set = {
                     "name": CLIENT_INFO.get("name"),
                     "value": target_temp,
-                    "measurement_unit": "°F"
+                    "measurement_unit": "°C"
                 }
                 temp = requests.post(f"http://localhost/api/device_target_temp/{CLIENT_INFO.get('name')}",
                     json=target_temp_set)

@@ -137,14 +137,17 @@ if __name__ == "__main__":
 
             print("Bubble sensor reading: {}".format(samples[counter]))
             print("Sending measurement values to server")
-            bubble = requests.post(f"http://localhost/api/bub_measurement/{CLIENT_INFO.get('name')}")
+            bubble_status = 200
+            if samples[counter] == 1:
+                bubble = requests.post(f"http://localhost/api/bub_measurement/{CLIENT_INFO.get('name')}")
+                bubble_status = bubble.status_code
             temp_measurement = {
                 "value": temp,
                 "measurement_unit": "°C"
             }
             temp = requests.post(f"http://localhost/api/temp_measurement/{CLIENT_INFO.get('name')}",
                 json=temp_measurement)
-            if bubble.status_code == 200 and temp.status_code == 200:
+            if bubble_status == 200 and temp.status_code == 200:
                 print("Sending measurements to server was successful\n")
             else:
                 print("Sending measurements to server failed! Proceeding with measurements anyway.\n")

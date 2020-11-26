@@ -7,7 +7,7 @@ module.exports = {
         return m(".device-list", Device.list.map(function(device) {
             return m(".device-list-item", [
                 m(".device-name", device.name),
-                m(".device-sensors", device.censors.map(function(sensor){
+                m(".device-sensors", device.sensors.map(function(sensor){
                     return m(".sensor", sensor)
                 }))
             ])

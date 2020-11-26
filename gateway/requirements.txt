@@ -1,0 +1,17 @@
+Adafruit-Blinka==5.8.0
+adafruit-circuitpython-busdevice==5.0.1
+adafruit-circuitpython-register==1.9.1
+adafruit-circuitpython-tmp117==1.0.0
+Adafruit-PlatformDetect==2.22.1
+Adafruit-PureIO==1.1.7
+certifi==2020.11.8
+chardet==3.0.4
+colorzero==1.1
+gpiozero==1.5.1
+idna==2.10
+pkg-resources==0.0.0
+pyftdi==0.52.0
+pyserial==3.5
+pyusb==1.1.0
+requests==2.25.0
+urllib3==1.26.2

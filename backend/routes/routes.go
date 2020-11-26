@@ -83,7 +83,7 @@ func GetDeviceTargetTemp(c *gin.Context) {
 func PostDeviceTargetTemp(c *gin.Context) {
 	deviceName := c.Param("device_name")
 	device, err := database.GetDevice(c, deviceName)
-	if err != nil || !helpers.Contains(device.Censors, "temperature") {
+	if err != nil || !helpers.Contains(device.Sensors, "temperature") {
 		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
@@ -144,7 +144,7 @@ func GetBubMeasurements(c *gin.Context) {
 func PostBubMeasurement(c *gin.Context) {
 	deviceName := c.Param("device_name")
 	device, err := database.GetDevice(c, deviceName)
-	if err != nil || !helpers.Contains(device.Censors, "bubble") {
+	if err != nil || !helpers.Contains(device.Sensors, "bubble") {
 		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}
@@ -206,7 +206,7 @@ func GetTempMeasurements(c *gin.Context) {
 func PostTempMeasurement(c *gin.Context) {
 	deviceName := c.Param("device_name")
 	device, err := database.GetDevice(c, deviceName)
-	if err != nil || !helpers.Contains(device.Censors, "temperature") {
+	if err != nil || !helpers.Contains(device.Sensors, "temperature") {
 		c.AbortWithStatus(http.StatusForbidden)
 		return
 	}

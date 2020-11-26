@@ -33,16 +33,16 @@ for i in data.get('temp_measurements'):
 # Add bubble measurements
 for i in range(4):
     name = data.get('devices')[1].get('name')
-    r = requests.post(f'http://localhost:8080/bub_measurement/{name}', json=i)
+    r = requests.post(f'http://localhost:8080/bub_measurement/{name}')
     print('200 =', r.status_code)
 
-# Add temp measurements to device with no temp censor
+# Add temp measurements to device with no temp sensor
 for i in data.get('temp_measurements'):
     name = data.get('devices')[1].get('name')
     r = requests.post(f'http://localhost:8080/temp_measurement/{name}', json=i)
     print('403 =', r.status_code)
 
-# Add bubble measurements to device with no bubble censor
+# Add bubble measurements to device with no bubble sensor
 for i in range(4):
     name = data.get('devices')[2].get('name')
     r = requests.post(f'http://localhost:8080/bub_measurement/{name}', json=i)

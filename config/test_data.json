@@ -2,26 +2,26 @@
     "devices": [
         {
             "name": "test_name",
-            "censors": [
+            "sensors": [
                 "temperature",
                 "bubble"
             ]
         },
         {
             "name": "test_name2",
-            "censors": [
+            "sensors": [
                 "bubble"
             ]
         },
         {
             "name": "test_name4",
-            "censors": [
+            "sensors": [
                 "temperature"
             ]
         },
         {
             "name": "👌",
-            "censors": [
+            "sensors": [
                 "temperature",
                 "bubble"
             ]

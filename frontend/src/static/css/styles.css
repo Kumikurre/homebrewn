@@ -7,6 +7,28 @@ html{
     text-align: center;
 }
 
+.bar {
+    height:30px;
+    background: rgb(63, 63, 63);
+    border:1px darkgray solid;
+    width:500px;
+    position:relative;
+    overflow:hidden;
+}
+.bar span {
+    width:10px;
+    height:30px;
+    background-image:linear-gradient(to right, transparent, red, transparent);
+    position:absolute;
+    top:0;
+}
+
+.removeGradient span {
+    background-image:none;
+    background-color:red;
+    transform:scaleX(.2);
+}
+
 #header h1 {
     font-size: 5rem;
     color: #1f41ff;

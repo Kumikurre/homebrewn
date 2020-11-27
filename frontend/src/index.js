@@ -63,11 +63,65 @@ var refreshTempChart = function(){
             
         });
     }
+    
+    var refreshBubbleChart = function(){
+        rawBubbleData = []
+        normalizedData = []
+        
+        function HeatBar(bar){
+            this._bar = bar;
+        }
+        
+        HeatBar.prototype.createTick = function(/* float{0,1} */ atOffset, opacity){
+            var bw = this._bar.offsetWidth * atOffset;
+            var el = document.createElement("span");
+            el.style.opacity = opacity;
+            el.style.left = bw + "px";
+            console.log("Createtick: ", atOffset, "bw: ", bw)
+            this._bar.appendChild(el);
+        };
+        
+        fetch(apiUrl + "bub_measurements_all")
+            .then(response => response.json())
+            .then(data => {
+                for (meas in data){
+                    rawBubbleData.push(data[meas].timestamp / 1000000)
+                }
+
+                var maxValue = Math.max(...rawBubbleData)
+                var minValue = Math.min(...rawBubbleData)
+
+                for(val in rawBubbleData){
+                    normalizedData.push((rawBubbleData[val] - minValue) / (maxValue - minValue))
+                }
+                console.log("normalizedData:", normalizedData)
+                var barElem = document.querySelector(".bar"),
+                    bar = new HeatBar(barElem);
+                for(tick in normalizedData)
+                    bar.createTick(tick, 10);
+
+                barElem.addEventListener('mousedown', function() {
+                    this.classList.add("removeGradient");
+                }, false);
+                
+                barElem.addEventListener('mouseup', function() {
+                    this.classList.remove("removeGradient");
+                }, false);
+            });
+        
+    }
+
+
 
 var convertToDate = function(timeInNanoSecond){
     return new Date(timeInNanoSecond/1000000)
 }
 
-refreshTempChart()
+var refreshCharts = function(){
+    refreshTempChart()
+    refreshBubbleChart()
+}
+
+refreshCharts()
 
 

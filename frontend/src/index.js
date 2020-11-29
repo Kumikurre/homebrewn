@@ -36,7 +36,6 @@ var refreshTempChart = function(){
             }
 
             for (const [key, value] of Object.entries(output.xs)) {
-                console.log(`${key}: ${value}`);
                 keyList = [key]
                 valueList = [value]
 
@@ -46,7 +45,6 @@ var refreshTempChart = function(){
                 output.columns.push(keyListFinal)
                 output.columns.push(valueListFinal)
               }
-            console.log(output)
 
             var chart = c3.generate({
                 bindto: '#graph',
@@ -77,7 +75,6 @@ var refreshTempChart = function(){
             var el = document.createElement("span");
             el.style.opacity = opacity;
             el.style.left = bw + "px";
-            console.log("Createtick: ", atOffset, "bw: ", bw)
             this._bar.appendChild(el);
         };
         
@@ -121,6 +118,8 @@ var refreshCharts = function(){
     refreshTempChart()
     refreshBubbleChart()
 }
+
+var interval = setInterval(refreshCharts, 30000);
 
 refreshCharts()
 

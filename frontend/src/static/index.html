@@ -20,14 +20,27 @@
     <h1>Homebrewn</h1>
     <h2>A homebrewery automation system</h2>
   </div>
+
   <div class="row">
-    <div id="devicelist" class="maincolumn">Devices and their sensor types:</div>
-    <div id="graphcontrols" class="maincolumn"></div>
+    <div class="maincolumn">
+      <h3>Devices and their sensor types</h3>
+      <div id="devicelist"></div>
+    </div>
+    <div class="maincolumn">
+      <h3>Temperature control</h3>
+      <div id="tempcontrols"></div>
+    </div>
   </div>
-  <div id="graphdata" class="maincolumn"></div>
-  <div id="graph">
+
+  <div>
+    <h3>Temperature</h3>
+    <div id="graph"></div>
   </div>
-  <div class="bar"></div>
+  <div>
+    <h3>Gas exchange</h3>
+    <div class="bar"></div>
+  </div>
+
   <script src="main.js"></script>
 </body>
 </html>

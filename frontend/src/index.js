@@ -2,10 +2,10 @@ var m = require("mithril")
 var c3 = require("c3")
 
 var DeviceList = require("./views/DeviceList")
-var TempMeasurements = require("./views/MeasurementView")
+var TempMeasurements = require("./views/DeviceControlList")
 
 m.mount(document.getElementById("devicelist"), DeviceList)
-m.mount(document.getElementById("graphdata"), TempMeasurements)
+m.mount(document.getElementById("tempcontrols"), TempMeasurements)
 
 var apiUrl = "/api/"
 var refreshTempChart = function(){

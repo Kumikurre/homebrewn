@@ -9,9 +9,10 @@ html{
 
 .bar {
     height:30px;
+    margin: 10px;
     background: rgb(63, 63, 63);
     border:1px darkgray solid;
-    width:500px;
+    width:800px;
     position:relative;
     overflow:hidden;
 }
@@ -71,9 +72,10 @@ body{
 #graph {
     background-color: #f0f0f0;
     margin: 10px;
+    width: 800px;
 }
 
-#graphcontrols{
+#tempcontrols{
     background-color: yellowgreen;
 }
 

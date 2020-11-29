@@ -1,0 +1,24 @@
+var m = require("mithril")
+var TempManagement = require("../models/TempManagement")
+
+module.exports = {
+    oninit: TempManagement.loadList,
+    view: function() {
+        return m(".device-list", TempManagement.list.map(function(meas) {
+            return m("form.device-list-item", {
+                onsubmit: function(e) {
+                    e.preventDefault()
+                    TempManagement.save(meas)
+                }
+            },
+            [
+                m(".device-name", meas.device),
+                m(".temp", [meas.value, "  ", meas.measurement_unit]),
+                m("input.target[placeholder=Target]", {
+                    oninput: function (e) {meas.target = e.target.value},
+                }),
+                m("button.button[type=submit]", "Update temperature"),
+            ])
+        }))
+    }
+}

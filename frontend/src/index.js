@@ -91,11 +91,10 @@ var refreshTempChart = function(){
                 for(val in rawBubbleData){
                     normalizedData.push((rawBubbleData[val] - minValue) / (maxValue - minValue))
                 }
-                console.log("normalizedData:", normalizedData)
                 var barElem = document.querySelector(".bar"),
                     bar = new HeatBar(barElem);
                 for(tick in normalizedData)
-                    bar.createTick(tick, 10);
+                    bar.createTick(normalizedData[tick], 10);
 
                 barElem.addEventListener('mousedown', function() {
                     this.classList.add("removeGradient");

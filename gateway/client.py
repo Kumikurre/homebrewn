@@ -138,7 +138,7 @@ if __name__ == "__main__":
             print("Bubble sensor reading: {}".format(samples[counter]))
             print("Sending measurement values to server")
             bubble_status = 200
-            if samples[counter] == 1:
+            if samples[counter] == "1":
                 bubble = requests.post(f"http://localhost/api/bub_measurement/{CLIENT_INFO.get('name')}")
                 bubble_status = bubble.status_code
             temp_measurement = {

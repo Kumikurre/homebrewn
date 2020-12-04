@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import requests
 import adafruit_tmp117
-# Commented out for testing purposes
-# import board
+import board
 import busio
 import gpiozero
 import sys
@@ -30,7 +29,7 @@ class led:
     value = 0
 
 def connect_temp_sensor():
-   #heater = gpiozero.PWMLED(HEATER_PIN)
+    #heater = gpiozero.PWMLED(HEATER_PIN)
     # init temperature sensor
     try:
         print("Connecting to temperature sensor...")
@@ -70,12 +69,12 @@ def heat_brew(heater_obj):
     for i in range(10, 0, -1):
         heater.value = i*0.1
         time.sleep(LED_PULSE_INTERVAL)
+        heater.value = 0
 
 if __name__ == "__main__":
     # flash led as sign of start
-    # Commented out for testing purpses
-    # led = gpiozero.PWMLED(HEATER_PIN)
-    led = led()
+    led = gpiozero.PWMLED(HEATER_PIN)
+    #led = led()
 
     led.value = 1
     time.sleep(1)
@@ -86,11 +85,11 @@ if __name__ == "__main__":
     led.value = 0
 
     # Commented out for testing purposes
-    # tmp117 = connect_temp_sensor()
+    tmp117 = connect_temp_sensor()
     samples = connect_bubble_sensor()
 
     print("Add device to database")
-    r = requests.post('http://localhost/api/device', json=CLIENT_INFO)
+    r = requests.post('https://soo.si/api/device', json=CLIENT_INFO)
     if r.status_code == 200:
         print("Device added")
     elif r.status_code == 403:
@@ -110,7 +109,7 @@ if __name__ == "__main__":
         try:
             print("Measurement count: {}".format(str(counter)))
             print("Reading server for target temperature")
-            r = requests.get(f"http://localhost/api/device_target_temp/{CLIENT_INFO.get('name')}")
+            r = requests.get(f"https://soo.si/api/device_target_temp/{CLIENT_INFO.get('name')}")
             target_temp = TARGET_TEMP_DEFAULT
             if r.status_code == 200:
                 target_temp = r.json().get("value")
@@ -121,31 +120,32 @@ if __name__ == "__main__":
                     "value": target_temp,
                     "measurement_unit": "°C"
                 }
-                temp = requests.post(f"http://localhost/api/device_target_temp/{CLIENT_INFO.get('name')}",
+                temp = requests.post(f"https://soo.si/api/device_target_temp/{CLIENT_INFO.get('name')}",
                     json=target_temp_set)
             else:
                 print("Getting device target temperature failed! Proceeding with measurements anyway.")
+            print("Target temperature is {} °C".format(target_temp))
 
-            # Commented out for testing purposes
-            # temp = tmp117.temperature
-            temp = random.uniform(0, 100)
+            temp = tmp117.temperature
             print("Brew temperature is now {}".format(temp))
             if temp < target_temp:
                 heat_brew(led)
+                print("Heating brew")
             else:
                 time.sleep(WAIT_IF_NOT_HEAT)
+                print("No need to heat brew")
 
             print("Bubble sensor reading: {}".format(samples[counter]))
             print("Sending measurement values to server")
             bubble_status = 200
             if samples[counter] == "1":
-                bubble = requests.post(f"http://localhost/api/bub_measurement/{CLIENT_INFO.get('name')}")
+                bubble = requests.post(f"https://soo.si/api/bub_measurement/{CLIENT_INFO.get('name')}")
                 bubble_status = bubble.status_code
             temp_measurement = {
                 "value": temp,
                 "measurement_unit": "°C"
             }
-            temp = requests.post(f"http://localhost/api/temp_measurement/{CLIENT_INFO.get('name')}",
+            temp = requests.post(f"https://soo.si/api/temp_measurement/{CLIENT_INFO.get('name')}",
                 json=temp_measurement)
             if bubble_status == 200 and temp.status_code == 200:
                 print("Sending measurements to server was successful\n")

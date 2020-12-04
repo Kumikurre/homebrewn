@@ -138,17 +138,8 @@ if __name__ == "__main__":
             print("Bubble sensor reading: {}".format(samples[counter]))
             print("Sending measurement values to server")
             bubble_status = 200
-<<<<<<< Updated upstream
-            if samples[counter] == "1":
-=======
-<<<<<<< Updated upstream
-            if samples[counter] == 1:
->>>>>>> Stashed changes
-                bubble = requests.post(f"http://localhost/api/bub_measurement/{CLIENT_INFO.get('name')}")
-=======
             if samples[counter] == "1":
                 bubble = requests.post(f"https://soo.si/api/bub_measurement/{CLIENT_INFO.get('name')}")
->>>>>>> Stashed changes
                 bubble_status = bubble.status_code
             temp_measurement = {
                 "value": temp,

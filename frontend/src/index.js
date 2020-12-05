@@ -16,7 +16,8 @@ var refreshTempChart = function(){
 
     deviceIndex = 1
     tempValues = {}
-    fetch(apiUrl + "temp_measurements_all")
+    hourInNanos = 3600000000000
+    fetch(`${apiUrl}temp_measurements_all/from/${timeNowNanos() - hourInNanos}`)
         .then(response => response.json())
         .then(data => {
             for(val in data){
@@ -78,7 +79,7 @@ var refreshTempChart = function(){
             this._bar.appendChild(el);
         };
         
-        fetch(apiUrl + "bub_measurements_all")
+        fetch(`${apiUrl}bub_measurements_all/from/${timeNowNanos() - hourInNanos}`)
             .then(response => response.json())
             .then(data => {
                 for (meas in data){
@@ -111,6 +112,10 @@ var refreshTempChart = function(){
 
 var convertToDate = function(timeInNanoSecond){
     return new Date(timeInNanoSecond/1000000)
+}
+
+var timeNowNanos = function(){
+    return Math.round((new Date()).getTime() * 1000000);
 }
 
 var refreshCharts = function(){

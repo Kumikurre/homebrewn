@@ -1,4 +1,3 @@
-
 FROM golang:1.15.5 AS base
 
 ENV GO111MODULE=on
